@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Rescue AI - Indian Disaster Management & Emergency Response Assistant. Real-time vulnerability zonation, weather alerts, path routing, and SDRF SOS dispatch.">
+  <title>Rescue AI - India Emergency Response Assistant</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+  <!-- Offline Alert Banner -->
+  <div id="offline-banner" class="offline-banner hidden">
+    <div class="banner-content">
+      <span class="pulse-icon">📡</span>
+      <span><strong>Offline Local Mode:</strong> Local storage database loaded. Indian Zonation Maps & NDRF Survival Manuals are fully available without internet.</span>
+    </div>
+  </div>
+
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">🇮🇳</div>
+        <div class="brand-text">
+          <h1>Rescue AI</h1>
+          <span class="badge badge-emergency">NDMA / SDRF Portal</span>
+        </div>
+      </div>
+      
+      <nav class="nav-menu">
+        <a href="#dashboard" class="nav-item active" id="nav-dashboard">
+          <span class="icon">📊</span> National Dashboard
+        </a>
+        <a href="#guides" class="nav-item" id="nav-guides">
+          <span class="icon">📖</span> NDRF Guides
+        </a>
+        <a href="#shelters" class="nav-item" id="nav-shelters">
+          <span class="icon">🗺️</span> Zonation & Camps
+        </a>
+        <a href="#router" class="nav-item" id="nav-router">
+          <span class="icon">🧭</span> Evacuation Router
+        </a>
+        <a href="#sos" class="nav-item" id="nav-sos">
+          <span class="icon">📣</span> SDRF SOS Dispatch
+        </a>
+        <a href="#supplies" class="nav-item" id="nav-supplies">
+          <span class="icon">🎒</span> Rations Calculator
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-indicator">
+          <span class="dot online" id="connection-dot"></span>
+          <span id="connection-text">SDRF Server Online</span>
+        </div>
+        <button id="toggle-offline-btn" class="btn btn-secondary btn-sm">Simulate Offline Mode</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top header bar -->
+      <header class="top-header">
+        <div class="header-left">
+          <h2 id="page-title">National Dashboard</h2>
+        </div>
+        <div class="header-right">
+          <div class="quick-alarm-status">
+            <span class="alarm-badge flash" id="top-alert-banner">⚠️ IMD Heavy Rain Alert: Kerala Coastal Belt</span>
+          </div>
+          <div class="current-time" id="clock-display">16:52:00</div>
+        </div>
+      </header>
+
+      <!-- View Containers -->
+      <div class="view-viewport">
+        
+        <!-- DASHBOARD VIEW -->
+        <section id="view-dashboard" class="view-panel active">
+          <!-- Live Weather Warnings & Parameter Predictor -->
+          <div class="dashboard-grid">
+            <!-- Active Alerts -->
+            <div class="card stat-card border-emergency">
+              <div class="card-icon">⛈️</div>
+              <div class="stat-info">
+                <h3>IMD Alerts Active</h3>
+                <p class="stat-value text-emergency" id="dash-alerts-count">4 Alerts</p>
+                <span class="stat-desc">Kerala (Red), Assam (Orange), Odisha (Yellow)</span>
+              </div>
+            </div>
+            
+            <!-- Relief Camps Occupancy -->
+            <div class="card stat-card border-safe">
+              <div class="card-icon">⛺</div>
+              <div class="stat-info">
+                <h3>Relief Camp Spaces</h3>
+                <p class="stat-value text-safe">1,420 Available</p>
+                <span class="stat-desc">across 12 NDRF regional hubs</span>
+              </div>
+            </div>
+
+            <!-- Active Dispatched Units -->
+            <div class="card stat-card border-info">
+              <div class="card-icon">🚁</div>
+              <div class="stat-info">
+                <h3>SDRF Operations</h3>
+                <p class="stat-value text-info">22 Active</p>
+                <span class="stat-desc">Air Sorties, Boat Teams & Medical Camps</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Predictive Weather Risk Model Engine -->
+          <div class="card weather-prediction-card">
+            <div class="card-header">
+              <h3>Interactive IMD Hazard & Risk Prediction Engine</h3>
+              <span class="badge badge-info">AI Risk Forecaster</span>
+            </div>
+            <div class="prediction-content-grid">
+              <div class="prediction-inputs">
+                <div class="form-group">
+                  <label for="predict-state">Select Targeted State / Territory:</label>
+                  <select id="predict-state" class="form-input">
+                    <option value="kerala">Kerala (Southern Coastal Belt)</option>
+                    <option value="odisha">Odisha (Eastern Cyclone Corridor)</option>
+                    <option value="assam">Assam (Brahmaputra Flood Basin)</option>
+                    <option value="bihar">Bihar (Indo-Gangetic Plains)</option>
+                    <option value="uttarakhand">Uttarakhand (Himalayan Landslide Zone)</option>
+                    <option value="rajasthan">Rajasthan (Arid Desert Zone)</option>
+                  </select>
+                </div>
+
+                <div class="sliders-container">
+                  <div class="slider-group">
+                    <div class="slider-labels">
+                      <span>Rainfall Volume:</span>
+                      <span id="label-rainfall">220 mm</span>
+                    </div>
+                    <input type="range" id="param-rainfall" min="0" max="600" value="220" class="slider-input">
+                  </div>
+
+                  <div class="slider-group">
+                    <div class="slider-labels">
+                      <span>Wind Speed:</span>
+                      <span id="label-wind">85 km/h</span>
+                    </div>
+                    <input type="range" id="param-wind" min="0" max="250" value="85" class="slider-input">
+                  </div>
+
+                  <div class="slider-group">
+                    <div class="slider-labels">
+                      <span>Ground Vibrations (Seismic PGA):</span>
+                      <span id="label-seismic">0.05 g</span>
+                    </div>
+                    <input type="range" id="param-seismic" min="0" max="80" value="5" class="slider-input">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Output Meter -->
+              <div class="prediction-results">
+                <div class="risk-gauge-container">
+                  <div class="risk-badge-display" id="risk-badge-result">HIGH RISK</div>
+                  <div class="risk-description" id="risk-desc-result">Monsoon floods and landslide warnings are critical. Shelter evacuations are recommended.</div>
+                </div>
+                
+                <div class="probability-bars">
+                  <div class="prob-bar-row">
+                    <span>Flood Risk:</span>
+                    <div class="bar-outer"><div class="bar-inner" id="prob-flood" style="width: 75%">75%</div></div>
+                  </div>
+                  <div class="prob-bar-row">
+                    <span>Cyclone / Storm:</span>
+                    <div class="bar-outer"><div class="bar-inner" id="prob-cyclone" style="width: 40%">40%</div></div>
+                  </div>
+                  <div class="prob-bar-row">
+                    <span>Landslide Threat:</span>
+                    <div class="bar-outer"><div class="bar-inner" id="prob-landslide" style="width: 60%">60%</div></div>
+                  </div>
+                  <div class="prob-bar-row">
+                    <span>Seismic Risk:</span>
+                    <div class="bar-outer"><div class="bar-inner" id="prob-seismic" style="width: 5%">5%</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-details">
+            <!-- Indian warnings feed -->
+            <div class="card column-span-2">
+              <div class="card-header">
+                <h3>IMD National Disaster Broadcasts</h3>
+                <span class="badge badge-warning">Live SDRF Feeds</span>
+              </div>
+              <div class="alert-feed" id="dashboard-feed-container">
+                <!-- Populated dynamically via JS -->
+              </div>
+            </div>
+
+            <!-- Quick Action SOS Panel -->
+            <div class="card emergency-action-card">
+              <h3>NDMA Emergency Helpline</h3>
+              <p>Direct alert gateway to national response battalions (NDRF) & state medical cells.</p>
+              <div class="helpline-number-box">
+                <span class="helpline-label">Toll Free Helpline:</span>
+                <span class="helpline-number">📞 112 / 1078</span>
+              </div>
+              <button class="btn btn-danger btn-lg btn-pulse" id="dashboard-sos-trigger">
+                🚨 Trigger SOS SDRF Report
+              </button>
+              <div class="quick-tips">
+                <strong>Safety SOP:</strong> In floods, move to solid concrete rooftops. Avoid wading in stagnant pool waters (threat of Leptospirosis/snakebites).
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SURVIVAL GUIDES VIEW -->
+        <section id="view-guides" class="view-panel">
+          <div class="guides-header">
+            <h3>NDRF Standard Operating Procedures (SOPs)</h3>
+            <p>Read localized safety protocols compiled by the National Disaster Management Authority (NDMA) for major Indian hazards.</p>
+          </div>
+          
+          <div class="guides-tabs">
+            <button class="guide-tab active" data-hazard="flood">🌊 Monsoon Flood</button>
+            <button class="guide-tab" data-hazard="cyclone">🌀 Coastal Cyclone</button>
+            <button class="guide-tab" data-hazard="earthquake">⛰️ Himalayan Earthquake</button>
+            <button class="guide-tab" data-hazard="drought">☀️ Heatwave / Drought</button>
+            <button class="guide-tab" data-hazard="accident">🚗 Industrial & Road Accident</button>
+          </div>
+
+          <div class="card guide-content-card">
+            <div class="guide-audio-bar">
+              <h3 id="guide-title">Monsoon Flood Preparedness</h3>
+              <button id="play-guide-btn" class="btn btn-secondary btn-sm">🔊 Listen to Localized Audio Guide</button>
+            </div>
+            
+            <div class="guide-body-grid">
+              <div class="guide-text-section">
+                <h4>NDMA Action Directives</h4>
+                <ol class="action-steps-list" id="guide-actions">
+                  <!-- JS dynamic steps -->
+                </ol>
+              </div>
+
+              <div class="guide-checklist-section">
+                <h4>Household Emergency Kit</h4>
+                <p class="subtitle">Secure these items before the hazard hits:</p>
+                <div class="checklist-container" id="guide-checklist">
+                  <!-- JS dynamic checklist -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ZONATION & CAMPS VIEW -->
+        <section id="view-shelters" class="view-panel">
+          <div class="layout-split">
+            <!-- Left panel: List & zonation filters -->
+            <div class="split-side">
+              <div class="card">
+                <div class="card-header">
+                  <h3>Regional Relief Hubs</h3>
+                </div>
+                <div class="filter-bar">
+                  <input type="text" id="shelter-search" placeholder="Search by camp/state..." class="form-input">
+                  
+                  <div class="form-group">
+                    <label>Map Zonation Overlays:</label>
+                    <div class="checkbox-group">
+                      <label><input type="checkbox" id="zone-seismic" checked> Seismic Hazard (Zone IV/V)</label>
+                      <label><input type="checkbox" id="zone-flood" checked> Brahmaputra/Ganges Flood Plains</label>
+                      <label><input type="checkbox" id="zone-cyclone" checked> Coastal Cyclone Corridor</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="shelter-list" id="shelter-list-container">
+                  <!-- Dynamically populated camps -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right panel: Vulnerability Zonation Map of India -->
+            <div class="split-main">
+              <div class="card map-card">
+                <div class="card-header">
+                  <h3>India Disaster Vulnerability Zonation Map</h3>
+                  <span class="badge badge-success">SDRF Monitored</span>
+                </div>
+                <div class="map-viewport">
+                  <!-- Stylized SVG Map of India outlining regions & vulnerability heat layers -->
+                  <svg id="shelter-svg-map" viewBox="0 0 500 550" width="100%" height="100%">
+                    <defs>
+                      <pattern id="map-grid" width="30" height="30" patternUnits="userSpaceOnUse">
+                        <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                      </pattern>
+                      <!-- Gradients for different Zonation overlays -->
+                      <radialGradient id="grad-seismic" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#ef4444" stop-opacity="0.5"/>
+                        <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+                      </radialGradient>
+                      <radialGradient id="grad-flood" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.45"/>
+                        <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+                      </radialGradient>
+                      <radialGradient id="grad-cyclone" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.45"/>
+                        <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+                      </radialGradient>
+                    </defs>
+                    <rect width="500" height="550" fill="url(#map-grid)" />
+                    
+                    <!-- Stylized Border Path of India (Representative) -->
+                    <path d="M 230,60 L 260,70 L 290,100 L 270,120 L 290,140 L 320,135 L 360,160 L 340,180 L 370,195 L 390,180 L 430,200 L 415,220 L 365,220 L 350,230 L 355,250 L 340,265 L 320,260 L 320,290 L 305,290 L 290,320 L 275,340 L 270,390 L 250,450 L 245,490 L 235,450 L 210,390 L 195,360 L 175,310 L 180,270 L 140,240 L 120,210 L 155,200 L 170,180 L 150,150 L 180,145 L 205,110 L 225,80 Z" 
+                          fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3" id="india-boundary"/>
+
+                    <!-- VULNERABILITY ZONATION OVERLAY LAYERS -->
+                    
+                    <!-- 1. Seismic Zone V Layer (Himalayan / Northeast Belt) -->
+                    <g id="svg-layer-seismic">
+                      <!-- North Himalayan Zone -->
+                      <ellipse cx="240" cy="85" rx="55" ry="25" fill="url(#grad-seismic)" />
+                      <!-- North-East Zone -->
+                      <ellipse cx="380" cy="190" rx="45" ry="30" fill="url(#grad-seismic)" />
+                      <text x="380" y="195" fill="rgba(239, 68, 68, 0.8)" font-size="9" font-weight="bold" text-anchor="middle">ZONE V SEISMIC</text>
+                    </g>
+                    
+                    <!-- 2. Flood Plains Layer (Ganges-Brahmaputra Basin) -->
+                    <g id="svg-layer-flood">
+                      <path d="M 230,130 Q 300,165 350,225" fill="none" stroke="url(#grad-flood)" stroke-width="40" stroke-linecap="round"/>
+                      <text x="290" y="170" fill="rgba(59, 130, 246, 0.8)" font-size="9" font-weight="bold" transform="rotate(18 290 170)">FLOOD BASIN</text>
+                    </g>
+
+                    <!-- 3. Coastal Cyclone Prone Corridor (Eastern Seaboard) -->
+                    <g id="svg-layer-cyclone">
+                      <path d="M 270,370 Q 285,300 330,240" fill="none" stroke="url(#grad-cyclone)" stroke-width="35" stroke-linecap="round"/>
+                      <text x="310" y="310" fill="rgba(245, 158, 11, 0.8)" font-size="9" font-weight="bold" transform="rotate(-65 310 310)">CYCLONE BELT</text>
+                    </g>
+
+                    <!-- Safe Relief Routes connecting markers (Visual guidance) -->
+                    <g opacity="0.3">
+                      <line x1="210" y1="120" x2="300" y2="210" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 3"/>
+                      <line x1="300" y1="210" x2="280" y2="330" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 3"/>
+                      <line x1="280" y1="330" x2="245" y2="450" stroke="#fff" stroke-width="1.5" stroke-dasharray="3 3"/>
+                    </g>
+
+                    <!-- Camp Markers will be rendered here dynamically -->
+                    <g id="map-markers-group"></g>
+                  </svg>
+
+                  <div class="map-legend zonation-legend">
+                    <span class="legend-item"><span class="legend-dot seismic-dot"></span> Zone V Seismic</span>
+                    <span class="legend-item"><span class="legend-dot flood-dot"></span> Flood Plains</span>
+                    <span class="legend-item"><span class="legend-dot cyclone-dot"></span> Cyclone Corridor</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- EVACUATION ROUTER VIEW -->
+        <section id="view-router" class="view-panel">
+          <div class="layout-split">
+            <!-- Left panel: Path details & simulation options -->
+            <div class="split-side">
+              <div class="card">
+                <div class="card-header">
+                  <h3>NDMA Route Planner</h3>
+                </div>
+                <div class="card-body">
+                  <p class="section-desc">Trace evacuation pathways out of hazard zones (e.g. coastal villages or flooded riversides) to safe base hubs.</p>
+                  
+                  <div class="form-group">
+                    <label for="route-start">Your Current Location:</label>
+                    <select id="route-start" class="form-input">
+                      <option value="A">Coastal Sector (Point A - Odisha Beach)</option>
+                      <option value="B">Riverbank Settlement (Point B - Assam Valley)</option>
+                      <option value="C">Hill Station Pass (Point C - Uttarakhand Slope)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="route-hazard-avoidance">Filter Road Obstacles:</label>
+                    <div class="checkbox-group">
+                      <label><input type="checkbox" id="avoid-floods" checked> Active River Overflow</label>
+                      <label><input type="checkbox" id="avoid-landslides" checked> Landslide Blockages</label>
+                    </div>
+                  </div>
+
+                  <button id="calculate-route-btn" class="btn btn-primary btn-block">🧭 Calculate Safe Route</button>
+
+                  <div class="route-results hidden" id="route-results-panel">
+                    <div class="divider"></div>
+                    <h4>Route Guidance Output</h4>
+                    <div class="route-info-row">
+                      <span><strong>Total Distance:</strong></span>
+                      <span id="route-distance">4.5 km</span>
+                    </div>
+                    <div class="route-info-row">
+                      <span><strong>Estimated Evac Time:</strong></span>
+                      <span id="route-time">18 mins</span>
+                    </div>
+                    <div class="route-info-row">
+                      <span><strong>NDRF Clearance:</strong></span>
+                      <span class="badge badge-success" id="route-safety-badge">Clear & Safe</span>
+                    </div>
+                    
+                    <div class="directions-list" id="route-directions-list">
+                      <!-- Turned dynamically by JS -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right panel: Router map visualizer -->
+            <div class="split-main">
+              <div class="card map-card">
+                <div class="card-header">
+                  <h3>SDRF Active Path Monitor</h3>
+                </div>
+                <div class="map-viewport">
+                  <!-- SVG representation of router nodes -->
+                  <svg id="router-svg-map" viewBox="0 0 600 400" width="100%" height="100%">
+                    <rect width="600" height="400" fill="url(#map-grid)" />
+                    
+                    <!-- Blocked hazard zones on roads -->
+                    <g id="router-hazard-polygons">
+                      <!-- Active landslide zone -->
+                      <circle cx="340" cy="180" r="50" fill="rgba(239, 68, 68, 0.15)" stroke="rgba(239, 68, 68, 0.4)" stroke-width="2" stroke-dasharray="4 4" />
+                      <text x="340" y="180" fill="rgba(239, 68, 68, 0.85)" font-size="11" font-weight="bold" text-anchor="middle">❌ BLOCKED ROAD</text>
+                    </g>
+
+                    <!-- Route Paths -->
+                    <g id="router-path-lines">
+                      <path id="path-AB" d="M 120,100 L 250,150" stroke="rgba(255,255,255,0.12)" stroke-width="4" fill="none" />
+                      <path id="path-BC" d="M 250,150 L 450,130" stroke="rgba(255,255,255,0.12)" stroke-width="4" fill="none" />
+                      <path id="path-AC" d="M 120,100 L 100,280 L 450,300 L 450,130" stroke="rgba(255,255,255,0.12)" stroke-width="4" fill="none" />
+                      
+                      <!-- Overlay highlighted route path -->
+                      <path id="active-routing-highlight" d="" stroke="#10b981" stroke-width="6" stroke-linecap="round" fill="none" class="hidden" />
+                    </g>
+
+                    <!-- Nodes -->
+                    <g id="router-nodes">
+                      <!-- Point A -->
+                      <circle cx="120" cy="100" r="14" fill="#1f2937" stroke="#3b82f6" stroke-width="2.5" id="node-A"/>
+                      <text x="120" y="104" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">A</text>
+                      <text x="120" y="80" fill="rgba(255,255,255,0.7)" font-size="9" text-anchor="middle">Odisha Shore</text>
+
+                      <!-- Point B -->
+                      <circle cx="250" cy="150" r="14" fill="#1f2937" stroke="#3b82f6" stroke-width="2.5" id="node-B"/>
+                      <text x="250" y="154" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">B</text>
+                      <text x="250" y="130" fill="rgba(255,255,255,0.7)" font-size="9" text-anchor="middle">River Basin</text>
+
+                      <!-- Point C (Base Camp Hub) -->
+                      <circle cx="450" cy="130" r="16" fill="#064e3b" stroke="#10b981" stroke-width="2.5" id="node-C"/>
+                      <text x="450" y="134" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">⛺</text>
+                      <text x="450" y="110" fill="#10b981" font-size="9" font-weight="bold" text-anchor="middle">SDRF Camp Alpha</text>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SOS EMERGENCY DISPATCH & MEDICAL HELP -->
+        <section id="view-sos" class="view-panel">
+          <div class="layout-split">
+            <!-- Left panel: Submit SOS Report -->
+            <div class="split-side">
+              <div class="card">
+                <div class="card-header">
+                  <h3>SDRF / NDRF Alert Gateway</h3>
+                </div>
+                <form id="sos-form" class="card-body">
+                  <div class="form-group">
+                    <label for="sos-name">Full Name / Reporter Designation:</label>
+                    <input type="text" id="sos-name" class="form-input" placeholder="e.g. Rajesh Kumar" required>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="sos-category">Emergency Incident Class:</label>
+                    <select id="sos-category" class="form-input" required>
+                      <option value="trapped">Trapped in Flood waters / Landslide</option>
+                      <option value="medical">Severe Medical Aid Requirement</option>
+                      <option value="supply">Food & Clean Water Crisis</option>
+                      <option value="accident">Severe Road / Structural Accident</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="sos-severity">Urgency Level:</label>
+                    <select id="sos-severity" class="form-input" required>
+                      <option value="critical">🔴 Critical (Immediate Threat to Life)</option>
+                      <option value="high">🟠 High (Urgent Medical/Ration Help)</option>
+                      <option value="medium">🟡 Medium (General Relocation Support)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="sos-count">People Affected/Stranded:</label>
+                    <input type="number" id="sos-count" class="form-input" value="4" min="1" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="sos-location">District & Landmark / GPS Coordinates:</label>
+                    <input type="text" id="sos-location" class="form-input" placeholder="e.g. Cuttack, near High School relief field" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="sos-notes">Situation Details / Medical Needs:</label>
+                    <textarea id="sos-notes" class="form-input" rows="3" placeholder="Specify any injuries, flooding levels, accessibility constraints..."></textarea>
+                  </div>
+
+                  <button type="submit" class="btn btn-danger btn-block">📣 Transmit SDRF SOS Alert</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Right panel: Active Rescue Dispatch Log -->
+            <div class="split-main">
+              <div class="card">
+                <div class="card-header">
+                  <h3>SDRF / NDRF Command Center Logs</h3>
+                  <span class="badge badge-emergency">Monitored Channel</span>
+                </div>
+                <div class="table-container">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Ticket ID</th>
+                        <th>Reporter</th>
+                        <th>Class</th>
+                        <th>District / Location</th>
+                        <th>Assigned Rescue Unit</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dispatch-log-body">
+                      <!-- Dynamic records -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- EMERGENCY SUPPLY CALCULATOR -->
+        <section id="view-supplies" class="view-panel">
+          <div class="layout-split">
+            <!-- Left panel: Calculator Input -->
+            <div class="split-side">
+              <div class="card">
+                <div class="card-header">
+                  <h3>India Ration Calculator</h3>
+                </div>
+                <div class="card-body">
+                  <p class="section-desc">Calculate essential dry food rations (Rice, Dal, Salt, Oils) and sanitizing agents required for family survival during regional isolations.</p>
+                  
+                  <div class="form-group">
+                    <label for="supplies-family">Family Size (Persons):</label>
+                    <input type="number" id="supplies-family" class="form-input" value="4" min="1" max="25">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="supplies-days">Isolation Duration (Days):</label>
+                    <input type="number" id="supplies-days" class="form-input" value="7" min="1" max="30">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="supplies-infant">Includes Babies/Toddlers?</label>
+                    <select id="supplies-infant" class="form-input">
+                      <option value="no">No</option>
+                      <option value="yes">Yes (Add milk powder & baby supplements)</option>
+                    </select>
+                  </div>
+
+                  <button id="calculate-supplies-btn" class="btn btn-primary btn-block">🎒 Compute Relief Allocation</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right panel: Rations list output -->
+            <div class="split-main">
+              <div class="card">
+                <div class="card-header">
+                  <h3>Recommended SDRF Relief Allocation</h3>
+                </div>
+                <div class="card-body">
+                  <div class="supplies-grid" id="supplies-output-grid">
+                    <div class="supply-item-card">
+                      <div class="supply-icon">💧</div>
+                      <div class="supply-details">
+                        <h4>Safe Drinking Water</h4>
+                        <p class="supply-quantity" id="supply-qty-water">84 Liters</p>
+                        <p class="supply-notes">3 Liters per person per day + Halogen purification tablets.</p>
+                      </div>
+                    </div>
+
+                    <div class="supply-item-card">
+                      <div class="supply-icon">🍚</div>
+                      <div class="supply-details">
+                        <h4>Dry Rations (Rice / Dals)</h4>
+                        <p class="supply-quantity" id="supply-qty-food">14 kg Rice & Dal</p>
+                        <p class="supply-notes">Standard dry wheat/pulse allocation (400g raw dry grain/person/day).</p>
+                      </div>
+                    </div>
+
+                    <div class="supply-item-card">
+                      <div class="supply-icon">🩹</div>
+                      <div class="supply-details">
+                        <h4>Medical Kit & ORS</h4>
+                        <p class="supply-quantity" id="supply-qty-meds">1 Kit & ORS Packets</p>
+                        <p class="supply-notes">Oral Rehydration Salts, antiseptics, bandages, chlorine drops.</p>
+                      </div>
+                    </div>
+
+                    <div class="supply-item-card">
+                      <div class="supply-icon">🔦</div>
+                      <div class="supply-details">
+                        <h4>Emergency Gear Kit</h4>
+                        <p class="supply-quantity" id="supply-qty-gear">1 Pack</p>
+                        <p class="supply-notes">High-beam torches, whistle, dry matchbox, and emergency space sheets.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="checklist-action-bar">
+                    <button class="btn btn-secondary" id="copy-supplies-btn">📋 Copy Ration Checklist</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Instant One-Tap SOS Overlay Modal -->
+  <div id="sos-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header-sos">
+        <span class="modal-alert-icon">🚨</span>
+        <h3>Instant One-Tap SOS Gateway</h3>
+        <button id="close-sos-modal-btn" class="close-modal-btn">&times;</button>
+      </div>
+      <div class="modal-body-sos">
+        <p class="modal-info-text">Rescue AI is fetching your live location and establishing a direct communication link to the nearest SDRF/NDRF command station.</p>
+        
+        <!-- Live Connection Steps -->
+        <div class="connection-status-flow">
+          <div class="status-step active" id="step-gps">
+            <span class="step-dot"></span>
+            <div class="step-detail">
+              <h5>GPS Geolocation Status</h5>
+              <p id="gps-coordinate-status">Requesting device coordinates...</p>
+            </div>
+          </div>
+          
+          <div class="status-step" id="step-network">
+            <span class="step-dot"></span>
+            <div class="step-detail">
+              <h5>SDRF Relay Connection</h5>
+              <p id="relay-status">Connecting to local district dispatcher...</p>
+            </div>
+          </div>
+
+          <div class="status-step" id="step-assigned">
+            <span class="step-dot"></span>
+            <div class="step-detail">
+              <h5>Rescue Unit Deployment</h5>
+              <p id="deployment-status">Waiting for battalion dispatch...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Assist Options -->
+        <div class="modal-quick-actions">
+          <h4>Immediate Voice Hotlines</h4>
+          <div class="voice-buttons-grid">
+            <a href="tel:112" class="voice-btn call-112">
+              <span>📞 Dial NDRF (112)</span>
+            </a>
+            <a href="tel:1078" class="voice-btn call-1078">
+              <span>📞 Dial SDRF (1078)</span>
+            </a>
+          </div>
+          <button id="send-sms-sos-btn" class="btn btn-secondary btn-block btn-sm">💬 Send Emergency SMS Link</button>
+        </div>
+
+        <div class="modal-footer-sos">
+          <button id="cancel-sos-btn" class="btn btn-secondary btn-block">Dismiss Gateway</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
